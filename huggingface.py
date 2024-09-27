@@ -4,12 +4,6 @@ from dotenv import load_dotenv
 import streamlit as st
 import speech_recognition as sr
 import playsound
-# from langchain.document_loaders import CSVLoader
-# from langchain.embeddings import OpenAIEmbeddings
-# from langchain.text_splitter import CharacterTextSplitter
-# from langchain.vectorstores import Chroma
-# from langchain.chains import RetrievalQA
-# from langchain.llms import OpenAI
 from formated_response import format_response
 from gtts import gTTS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -19,16 +13,17 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import CSVLoader
 import pygame
 import re
+from PIL import Image 
 
 
 load_dotenv()
 
 # Make sure to replace this with your actual OpenAI API key securely
-api_key = os.getenv('OPENAI_API_KEY')
+# api_key = os.getenv('OPENAI_API_KEY')
 
 # Load documents from CSV
-csv_loader = CSVLoader("mix555.csv")
-documents = csv_loader.load()
+# csv_loader = CSVLoader("mix555.csv")
+# documents = csv_loader.load()
 # Load environment variables
 
 # Get OpenAI API key
@@ -75,7 +70,7 @@ def speech_to_text():
         r.adjust_for_ambient_noise(source, duration=0.5)
         time.sleep(1)
         
-        audio = r.listen(source)
+        audio = r.listen(source, timeout=7, phrase_time_limit=5)
         
         st.write("Processing...")
 
@@ -107,7 +102,7 @@ def say(text):
         st.error(f"Error playing audio: {str(e)}")
     finally:
         pygame.mixer.quit()
-        # os.remove('output.mp3')
+        os.remove('output.mp3')
 
 def chat_with_bot(query):
     try:
@@ -137,7 +132,9 @@ def chat_with_bot(query):
     except Exception as e:
         return f"Maaf, terjadi kesalahan: {str(e)}"
 
-st.title("Bismillah")
+st.title("Cari Dokter")
+images = Image.open('cari dokter.jpg')
+st.image(images, caption='dok, dimana dok')
 
 if st.button("Start Recording"):
     text = speech_to_text()
@@ -146,6 +143,7 @@ if st.button("Start Recording"):
         try:
             response = chat_with_bot(text)
             st.write("You said: ", text)
+            st.write(response)
             say(response)
             st.write('Complete')
         except Exception as e:
