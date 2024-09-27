@@ -1,0 +1,5 @@
+template :
+
+Gunakan informasi berikut ini untuk memberikan rekomendasi:
+1. Input pengguna: {query}
+2. Konteks tambahan: {context}
